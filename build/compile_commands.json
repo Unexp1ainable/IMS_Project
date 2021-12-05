@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/unex/Desktop/IMS/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -isystem /usr/local/include/opencv4  -g   -o CMakeFiles/IMS.dir/main.cpp.o -c /home/unex/Desktop/IMS/main.cpp",
+  "file": "/home/unex/Desktop/IMS/main.cpp"
+}
+]

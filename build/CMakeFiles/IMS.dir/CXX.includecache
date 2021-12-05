@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/unex/Desktop/IMS/LatticeCell.h
+
+/home/unex/Desktop/IMS/main.cpp
+iostream
+-
+vector
+-
+opencv4/opencv2/opencv.hpp
+/home/unex/Desktop/IMS/opencv4/opencv2/opencv.hpp
+LatticeCell.h
+/home/unex/Desktop/IMS/LatticeCell.h
+

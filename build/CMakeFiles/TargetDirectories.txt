@@ -1,0 +1,3 @@
+/home/unex/Desktop/IMS/build/CMakeFiles/rebuild_cache.dir
+/home/unex/Desktop/IMS/build/CMakeFiles/edit_cache.dir
+/home/unex/Desktop/IMS/build/CMakeFiles/IMS.dir
