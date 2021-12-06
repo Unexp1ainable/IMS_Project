@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/IMS.dir/Lattice.cpp.o"
   "CMakeFiles/IMS.dir/main.cpp.o"
   "IMS"
   "IMS.pdb"

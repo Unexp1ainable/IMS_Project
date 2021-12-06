@@ -74,12 +74,12 @@ clean: CMakeFiles/IMS.dir/clean
 CMakeFiles/IMS.dir/all:
 	$(MAKE) -f CMakeFiles/IMS.dir/build.make CMakeFiles/IMS.dir/depend
 	$(MAKE) -f CMakeFiles/IMS.dir/build.make CMakeFiles/IMS.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/unex/Desktop/IMS/build/CMakeFiles --progress-num=1,2 "Built target IMS"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/unex/Desktop/IMS/build/CMakeFiles --progress-num=1,2,3 "Built target IMS"
 .PHONY : CMakeFiles/IMS.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/IMS.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/unex/Desktop/IMS/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/unex/Desktop/IMS/build/CMakeFiles 3
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/IMS.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/unex/Desktop/IMS/build/CMakeFiles 0
 .PHONY : CMakeFiles/IMS.dir/rule

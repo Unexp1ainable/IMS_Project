@@ -6,6 +6,12 @@
 
 #IncludeRegexTransform: 
 
+/home/unex/Desktop/IMS/Lattice.h
+vector
+-
+LatticeCell.h
+/home/unex/Desktop/IMS/LatticeCell.h
+
 /home/unex/Desktop/IMS/LatticeCell.h
 
 /home/unex/Desktop/IMS/main.cpp
@@ -15,6 +21,6 @@ vector
 -
 opencv4/opencv2/opencv.hpp
 /home/unex/Desktop/IMS/opencv4/opencv2/opencv.hpp
-LatticeCell.h
-/home/unex/Desktop/IMS/LatticeCell.h
+Lattice.h
+/home/unex/Desktop/IMS/Lattice.h
 

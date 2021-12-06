@@ -123,6 +123,33 @@ IMS/fast:
 	$(MAKE) -f CMakeFiles/IMS.dir/build.make CMakeFiles/IMS.dir/build
 .PHONY : IMS/fast
 
+Lattice.o: Lattice.cpp.o
+
+.PHONY : Lattice.o
+
+# target to build an object file
+Lattice.cpp.o:
+	$(MAKE) -f CMakeFiles/IMS.dir/build.make CMakeFiles/IMS.dir/Lattice.cpp.o
+.PHONY : Lattice.cpp.o
+
+Lattice.i: Lattice.cpp.i
+
+.PHONY : Lattice.i
+
+# target to preprocess a source file
+Lattice.cpp.i:
+	$(MAKE) -f CMakeFiles/IMS.dir/build.make CMakeFiles/IMS.dir/Lattice.cpp.i
+.PHONY : Lattice.cpp.i
+
+Lattice.s: Lattice.cpp.s
+
+.PHONY : Lattice.s
+
+# target to generate assembly for a file
+Lattice.cpp.s:
+	$(MAKE) -f CMakeFiles/IMS.dir/build.make CMakeFiles/IMS.dir/Lattice.cpp.s
+.PHONY : Lattice.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -159,6 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... IMS"
+	@echo "... Lattice.o"
+	@echo "... Lattice.i"
+	@echo "... Lattice.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
