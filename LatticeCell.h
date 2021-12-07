@@ -6,7 +6,7 @@ using WindCell = bool;
 class LatticeCell
 {
 public:
-    LatticeCell(const bool isBorder_ = false) : isBorder(isBorder_) {}
+    LatticeCell(const bool solid_ = false) : solid(solid_) {}
     /**
         2   1
          \ /
@@ -15,5 +15,5 @@ public:
         4   5   */
     WindCell wind[6]{}; // each bucket will take one cell, which will be determined by its direction
     SnowCell snow = false;
-    bool isBorder;
+    bool solid;
 };

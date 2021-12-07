@@ -51,6 +51,10 @@ void toMat(const Lattice &lattice, Mat &latticeMat)
             auto wind = lattice[y][x].wind;
             if (wind[0] || wind[1] || wind[2] || wind[3] || wind[4] || wind[5])
             {
+                latticeMat.at<uint8_t>(y - 2, x - 1) = 122;
+            }
+            else if (lattice[y][x].solid)
+            {
                 latticeMat.at<uint8_t>(y - 2, x - 1) = 255;
             }
             else
@@ -61,18 +65,16 @@ void toMat(const Lattice &lattice, Mat &latticeMat)
     }
 }
 
-void latticeStep(Lattice &lattice)
+void latticeStepPropagation(Lattice &lattice)
 {
     Lattice tmpLattice(LATTICE_HEIGHT, LATTICE_WIDTH);
-
-    // wind step - FHP
-    // propagation
     for (int y = 2; y < LATTICE_HEIGHT * 2 + 2; y++)
     {
         for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++)
         {
             auto wind = lattice[y][x].wind;
             bool even = y % 2 == 0; // compensation for matrix representation
+            // sky collision danger
             if (wind[0])
             {
                 tmpLattice[y - 2][x].wind[3] = true;
@@ -81,6 +83,12 @@ void latticeStep(Lattice &lattice)
             {
                 tmpLattice[y - 1][x - even].wind[4] = true;
             }
+            if (wind[5])
+            {
+                tmpLattice[y - 1][x + !even].wind[2] = true;
+            }
+
+            // ground collision danger
             if (wind[2])
             {
                 tmpLattice[y + 1][x - even].wind[5] = true;
@@ -93,19 +101,25 @@ void latticeStep(Lattice &lattice)
             {
                 tmpLattice[y + 1][x + !even].wind[1] = true;
             }
-            if (wind[5])
-            {
-                tmpLattice[y - 1][x + !even].wind[2] = true;
-            }
         }
     }
+    lattice = tmpLattice;
+}
+
+void latticeStep(Lattice &lattice)
+{
+    // Lattice tmpLattice(LATTICE_HEIGHT, LATTICE_WIDTH);
+
+    // wind step - FHP
+    // propagation
+    latticeStepPropagation(lattice);
 
     // collision
     for (int y = 2; y < LATTICE_HEIGHT * 2 + 2; y++)
     {
         for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++)
         {
-            auto wind = tmpLattice[y][x].wind;
+            auto wind = lattice[y][x].wind;
             //   \ _
             //   /
             if (wind[0] && wind[2] && wind[4] && !wind[1] && !wind[3] && !wind[5])
@@ -126,17 +140,17 @@ void latticeStep(Lattice &lattice)
 
             if (!wind[0] && !wind[2] && wind[4] && wind[1] && !wind[3] && !wind[5])
             {
-                tmpLattice[y][x].wind[4] = false;
-                tmpLattice[y][x].wind[1] = false;
+                lattice[y][x].wind[4] = false;
+                lattice[y][x].wind[1] = false;
                 if (rand() % 2 == 0)
                 {
-                    tmpLattice[y][x].wind[2] = true;
-                    tmpLattice[y][x].wind[5] = true;
+                    lattice[y][x].wind[2] = true;
+                    lattice[y][x].wind[5] = true;
                 }
                 else
                 {
-                    tmpLattice[y][x].wind[0] = true;
-                    tmpLattice[y][x].wind[3] = true;
+                    lattice[y][x].wind[0] = true;
+                    lattice[y][x].wind[3] = true;
                 }
                 break;
             }
@@ -146,17 +160,17 @@ void latticeStep(Lattice &lattice)
 
             if ((!wind[0]) && wind[2] && (!wind[4]) && (!wind[1]) && (!wind[3]) && wind[5])
             {
-                tmpLattice[y][x].wind[2] = false;
-                tmpLattice[y][x].wind[5] = false;
+                lattice[y][x].wind[2] = false;
+                lattice[y][x].wind[5] = false;
                 if (rand() % 2 == 0)
                 {
-                    tmpLattice[y][x].wind[4] = true;
-                    tmpLattice[y][x].wind[1] = true;
+                    lattice[y][x].wind[4] = true;
+                    lattice[y][x].wind[1] = true;
                 }
                 else
                 {
-                    tmpLattice[y][x].wind[0] = true;
-                    tmpLattice[y][x].wind[3] = true;
+                    lattice[y][x].wind[0] = true;
+                    lattice[y][x].wind[3] = true;
                 }
                 break;
             }
@@ -165,17 +179,17 @@ void latticeStep(Lattice &lattice)
             //   |
             if (wind[0] && !wind[2] && !wind[4] && !wind[1] && wind[3] && !wind[5])
             {
-                tmpLattice[y][x].wind[0] = false;
-                tmpLattice[y][x].wind[3] = false;
+                lattice[y][x].wind[0] = false;
+                lattice[y][x].wind[3] = false;
                 if (rand() % 2 == 0)
                 {
-                    tmpLattice[y][x].wind[4] = true;
-                    tmpLattice[y][x].wind[1] = true;
+                    lattice[y][x].wind[4] = true;
+                    lattice[y][x].wind[1] = true;
                 }
                 else
                 {
-                    tmpLattice[y][x].wind[2] = true;
-                    tmpLattice[y][x].wind[5] = true;
+                    lattice[y][x].wind[2] = true;
+                    lattice[y][x].wind[5] = true;
                 }
                 break;
             }
@@ -187,19 +201,18 @@ void latticeStep(Lattice &lattice)
             tmpWind[0] = wind[3];
             tmpWind[1] = wind[4];
             tmpWind[2] = wind[5];
-            memcpy(tmpLattice[y][x].wind, tmpWind, sizeof(tmpWind));
+            memcpy(lattice[y][x].wind, tmpWind, sizeof(tmpWind));
         }
     }
-    lattice = tmpLattice;
 
-    // generate new wind particles
-    // for (int i = 0; i < WIND_STRENGTH; i++)
-    // {
-    //     int directions[2] = {4, 5};
-    //     auto place = rand() % LATTICE_HEIGHT * 2;
-    //     auto direction = directions[rand() % 2];
-    //     lattice[place][1].wind[direction] = true;
-    // }
+    //generate new wind particles
+    for (int i = 0; i < WIND_STRENGTH; i++)
+    {
+        int directions[2] = {4, 5};
+        auto place = rand() % LATTICE_HEIGHT * 2;
+        auto direction = directions[rand() % 2];
+        lattice[place][1].wind[direction] = true;
+    }
 
     // for (int i = 0; i < WIND_STRENGTH; i++)
     // {
@@ -213,17 +226,17 @@ void latticeStep(Lattice &lattice)
     // TESTING
     // lattice[60][40].wind[1] = true;
     // lattice[20][20].wind[4] = true;
-
+    //
     // lattice[20][40].wind[2] = true;
     // lattice[60][20].wind[5] = true;
-
+    //
     // lattice[40][40].wind[0] = true;
     // lattice[20][40].wind[3] = true;
-
+    //
     // lattice[62][40].wind[1] = true;
     // lattice[62][20].wind[5] = true;
     // lattice[2][30].wind[3] = true;
-
+    //
     // lattice[2][40].wind[2] = true;
     // lattice[2][20].wind[4] = true;
     // lattice[62][30].wind[0] = true;
