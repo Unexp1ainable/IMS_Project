@@ -176,7 +176,27 @@ void latticeStepPropagation(Lattice &lattice)
 
             if (wind[2])
             {
-                tmpLattice[y + 1][x - even].wind[5] = true;
+                // check if solid
+                if (lattice[y + 1][x - even].solid)
+                {
+                    if (lattice[y - 1][x - even].solid && !lattice[y + 2][x].solid)
+                    {
+                        tmpLattice[y + 1][x + !even].wind[1] = true;
+                    }
+                    else if (!lattice[y - 1][x - even].solid && lattice[y + 2][x].solid)
+                    {
+                        tmpLattice[y - 2][x].wind[3] = true;
+                    }
+                    else
+                    {
+                        tmpLattice[y - 1][x + !even].wind[2] = true;
+                    }
+                }
+                // aint solid
+                else
+                {
+                    tmpLattice[y + 1][x - even].wind[5] = true;
+                }
             }
             if (wind[3])
             {
@@ -350,10 +370,10 @@ void latticeStep(Lattice &lattice)
 
     // lattice[50][25].wind[0] = true;
     // lattice[50][25].wind[1] = true;
-    // lattice[50][25].wind[2] = true;
+    lattice[50][25].wind[2] = true;
     // lattice[50][25].wind[3] = true;
     // lattice[50][25].wind[4] = true;
-    lattice[50][25].wind[5] = true;
+    // lattice[50][25].wind[5] = true;
 }
 
 void buildScene()
@@ -361,6 +381,9 @@ void buildScene()
     scene = vector<vector<bool>>(LATTICE_HEIGHT, vector<bool>(LATTICE_WIDTH, false));
 
     scene[LATTICE_HEIGHT - 1] = vector<bool>(LATTICE_WIDTH, true);
+    // scene[39][16] = true;
+    // scene[40][16] = true;
+    // scene[40][17] = true;
 
     // scene[7][80] = true;
     // scene[7][81] = true;
