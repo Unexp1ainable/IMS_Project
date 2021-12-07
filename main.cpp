@@ -7,9 +7,9 @@
 using namespace cv;
 using namespace std;
 
-#define LATTICE_WIDTH 100
-#define LATTICE_HEIGHT 50
-#define WIND_STRENGTH 1 // must be between 0-LATTICE_HEIGHT
+#define LATTICE_WIDTH 1200
+#define LATTICE_HEIGHT 400
+#define WIND_STRENGTH 50 // must be between 0-LATTICE_HEIGHT
 vector<vector<bool>> scene{};
 
 void toCartesian(const Mat &hex, Mat &dst)
@@ -136,7 +136,7 @@ void latticeStepPropagation(Lattice &lattice)
                     }
                     else if (!lattice[y + 1][x - even].solid && lattice[y - 2][x].solid)
                     {
-                        tmpLattice[y + 2][x].wind[0] = true;
+                        tmpLattice[y + 1][x - even].wind[5] = true;
                     }
                     else
                     {
@@ -160,7 +160,7 @@ void latticeStepPropagation(Lattice &lattice)
                     }
                     else if (!lattice[y + 1][x + !even].solid && lattice[y - 2][x].solid)
                     {
-                        tmpLattice[y + 2][x].wind[0] = true;
+                        tmpLattice[y - 1][x - even].wind[1] = true;
                     }
                     else
                     {
@@ -184,7 +184,7 @@ void latticeStepPropagation(Lattice &lattice)
                     }
                     else if (!lattice[y - 1][x - even].solid && lattice[y + 2][x].solid)
                     {
-                        tmpLattice[y - 2][x].wind[3] = true;
+                        tmpLattice[y - 1][x - even].wind[4] = true;
                     }
                     else
                     {
@@ -232,7 +232,7 @@ void latticeStepPropagation(Lattice &lattice)
                     }
                     else if (!lattice[y - 1][x + !even].solid && lattice[y + 2][x].solid)
                     {
-                        tmpLattice[y - 2][x].wind[3] = true;
+                        tmpLattice[y - 1][x + !even].wind[2] = true;
                     }
                     else
                     {
@@ -391,7 +391,7 @@ void latticeStep(Lattice &lattice)
     // lattice[50][25].wind[1] = true;
     // lattice[50][25].wind[2] = true;
     // lattice[50][25].wind[3] = true;
-    lattice[50][25].wind[4] = true;
+    // lattice[50][25].wind[4] = true;
     // lattice[50][25].wind[5] = true;
 }
 
@@ -400,8 +400,27 @@ void buildScene()
     scene = vector<vector<bool>>(LATTICE_HEIGHT, vector<bool>(LATTICE_WIDTH, false));
 
     scene[LATTICE_HEIGHT - 1] = vector<bool>(LATTICE_WIDTH, true);
-    scene[39][81] = true;
-    scene[40][81] = true;
+
+    // for (int i = 0; i < LATTICE_HEIGHT / 5; i++)
+    // {
+    //     scene[LATTICE_HEIGHT / 5 * 2 + i][60 + i / 2] = true;
+    //     scene[LATTICE_HEIGHT / 5 * 2 + i + 1][60 + i / 2] = true;
+    // }
+
+    for (int i = 0; i < LATTICE_HEIGHT / 5 * 2; i++)
+    {
+        scene[i][80] = true;
+        scene[LATTICE_HEIGHT - i - 1][80] = true;
+    }
+
+    for (int i = 0; i < LATTICE_HEIGHT; i++)
+    {
+        scene[i][1] = true;
+        scene[i][LATTICE_WIDTH - 1] = true;
+    };
+
+    // scene[39][81] = true;
+    // scene[40][81] = true;
     // scene[41][80] = true;
 
     // scene[39][16] = true;
@@ -436,6 +455,20 @@ int main(int argc, char *argv[])
     Mat toShow(Size(LATTICE_WIDTH / 2 * 4 + LATTICE_WIDTH + 1, LATTICE_HEIGHT * 4 + 4), CV_8U);
     Lattice lattice(LATTICE_HEIGHT, LATTICE_WIDTH, scene);
 
+    for (int j = 0; j < LATTICE_HEIGHT / 6; j++)
+    {
+        for (int i = 0; i < LATTICE_WIDTH / 4; i++)
+        {
+
+            lattice[j + 1 + 20][i + 50].wind[0] = true;
+            lattice[j + 1 + 20][i + 50].wind[1] = true;
+            lattice[j + 1 + 20][i + 50].wind[2] = true;
+            lattice[j + 1 + 20][i + 50].wind[3] = true;
+            lattice[j + 1 + 20][i + 50].wind[4] = true;
+            lattice[j + 1 + 20][i + 50].wind[5] = true;
+        }
+    }
+
     // show
     namedWindow("image", WINDOW_NORMAL);
     // namedWindow("image2", WINDOW_NORMAL);
@@ -443,11 +476,12 @@ int main(int argc, char *argv[])
     while (true)
     {
         auto b = lattice[96][48].wind[1];
-        latticeStep(lattice);
+        for (int i = 0; i < 20; i++)
+            latticeStep(lattice);
         toMat(lattice, latticeMat);
         toCartesian(latticeMat, toShow);
         imshow("image", toShow);
-        auto k = waitKey(100);
+        auto k = waitKey(3);
         if (k == 27)
         {
             break;
