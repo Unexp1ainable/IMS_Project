@@ -1,3 +1,5 @@
 build
 .vscode
 CMakeFiles
+build/CMakeFiles/IMS.dir/main.cpp.o
+build/IMS
