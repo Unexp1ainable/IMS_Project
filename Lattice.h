@@ -8,17 +8,19 @@ using namespace std;
 class Lattice
 {
 public:
-    Lattice(const int height, const int width);
+    Lattice(const int height, const int width, vector<vector<bool>> scene);
     LatticeCell &at(const int height, const int width);
 
     vector<LatticeCell> &operator[](int height) { return _cells[height]; }
     const vector<LatticeCell> &operator[](int height) const { return _cells[height]; }
 
-    vector<vector<LatticeCell>> scene{};
-    void mask();
-
 private:
     int _width;
     int _height;
-    vector<vector<LatticeCell>> _cells;
+
+    // mask of the same size as the lattice,
+    // true cell means, that the cell in the lattice is immovable solid cell
+    vector<vector<bool>> _scene{};
+
+    vector<vector<LatticeCell>> _cells{};
 };

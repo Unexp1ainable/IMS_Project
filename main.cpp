@@ -10,6 +10,7 @@ using namespace std;
 #define LATTICE_WIDTH 100
 #define LATTICE_HEIGHT 50
 #define WIND_STRENGTH 1 // must be between 0-LATTICE_HEIGHT
+vector<vector<bool>> scene{};
 
 void toCartesian(const Mat &hex, Mat &dst)
 {
@@ -67,14 +68,37 @@ void toMat(const Lattice &lattice, Mat &latticeMat)
 
 void latticeStepPropagation(Lattice &lattice)
 {
-    Lattice tmpLattice(LATTICE_HEIGHT, LATTICE_WIDTH);
+    // flip vertical direction of the wind particles that are about to collide with the sky
+    for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++)
+    {
+        auto wind = lattice[2][x].wind;
+
+        if (wind[0])
+        {
+            lattice[2][x].wind[0] = false;
+            lattice[2][x].wind[3] = true;
+        }
+        if (wind[1])
+        {
+            lattice[2][x].wind[1] = false;
+            lattice[2][x].wind[2] = true;
+        }
+        if (wind[5])
+        {
+            lattice[2][x].wind[5] = false;
+            lattice[2][x].wind[4] = true;
+        }
+    }
+
+    Lattice tmpLattice(LATTICE_HEIGHT, LATTICE_WIDTH, scene);
+
     for (int y = 2; y < LATTICE_HEIGHT * 2 + 2; y++)
     {
         for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++)
         {
             auto wind = lattice[y][x].wind;
             bool even = y % 2 == 0; // compensation for matrix representation
-            // sky collision danger
+
             if (wind[0])
             {
                 tmpLattice[y - 2][x].wind[3] = true;
@@ -251,15 +275,23 @@ void latticeStep(Lattice &lattice)
     }
 }
 
+void buildScene()
+{
+    scene = vector<vector<bool>>(LATTICE_HEIGHT, vector<bool>(LATTICE_WIDTH, false));
+
+    scene[LATTICE_HEIGHT - 1] = vector<bool>(LATTICE_WIDTH, true);
+}
+
 int main(int argc, char *argv[])
 {
     assert(LATTICE_WIDTH != 0);
     assert(LATTICE_HEIGHT != 0);
     assert(WIND_STRENGTH > 0 && WIND_STRENGTH <= LATTICE_HEIGHT);
+    buildScene();
 
     Mat latticeMat = Mat::zeros(Size(LATTICE_WIDTH / 2, LATTICE_HEIGHT * 2), CV_8U);
     Mat toShow(Size(LATTICE_WIDTH / 2 * 4 + LATTICE_WIDTH + 1, LATTICE_HEIGHT * 4 + 4), CV_8U);
-    Lattice lattice(LATTICE_HEIGHT, LATTICE_WIDTH);
+    Lattice lattice(LATTICE_HEIGHT, LATTICE_WIDTH, scene);
 
     lattice[2][40].wind[2] = true;
     lattice[2][20].wind[4] = true;
