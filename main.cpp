@@ -96,30 +96,111 @@ void latticeStepPropagation(Lattice &lattice)
     {
         for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++)
         {
+            auto ff = tmpLattice[96][48].wind[4];
             auto wind = lattice[y][x].wind;
+
             bool even = y % 2 == 0; // compensation for matrix representation
 
             if (wind[0])
             {
-                tmpLattice[y - 2][x].wind[3] = true;
+                // check if solid
+                if (lattice[y - 2][x].solid)
+                {
+                    if (lattice[y - 1][x + !even].solid && !lattice[y - 1][x - even].solid)
+                    {
+                        tmpLattice[y + 1][x - even].wind[5] = true;
+                    }
+                    else if (!lattice[y - 1][x + !even].solid && lattice[y - 1][x - even].solid)
+                    {
+                        tmpLattice[y - 1][x + !even].wind[1] = true;
+                    }
+                    else
+                    {
+                        tmpLattice[y + 2][x].wind[0] = true;
+                    }
+                }
+                // aint solid
+                else
+                {
+                    tmpLattice[y - 2][x].wind[3] = true;
+                }
             }
             if (wind[1])
             {
-                tmpLattice[y - 1][x - even].wind[4] = true;
+                // check if solid
+                if (lattice[y - 1][x - even].solid)
+                {
+                    if (lattice[y + 1][x - even].solid && !lattice[y - 2][x].solid)
+                    {
+                        tmpLattice[y - 1][x + !even].wind[2] = true;
+                    }
+                    else if (!lattice[y + 1][x - even].solid && lattice[y - 2][x].solid)
+                    {
+                        tmpLattice[y + 2][x].wind[0] = true;
+                    }
+                    else
+                    {
+                        tmpLattice[y + 1][x + !even].wind[1] = true;
+                    }
+                }
+                // aint solid
+                else
+                {
+                    tmpLattice[y - 1][x - even].wind[4] = true;
+                }
             }
             if (wind[5])
             {
-                tmpLattice[y - 1][x + !even].wind[2] = true;
+                // check if solid
+                if (lattice[y - 1][x + !even].solid)
+                {
+                    if (lattice[y + 1][x + !even].solid && !lattice[y - 2][x].solid)
+                    {
+                        tmpLattice[y - 1][x - even].wind[4] = true;
+                    }
+                    else if (!lattice[y + 1][x + !even].solid && lattice[y - 2][x].solid)
+                    {
+                        tmpLattice[y + 2][x].wind[0] = true;
+                    }
+                    else
+                    {
+                        tmpLattice[y + 1][x - even].wind[5] = true;
+                    }
+                }
+                // aint solid
+                else
+                {
+                    tmpLattice[y - 1][x + !even].wind[2] = true;
+                }
             }
 
-            // ground collision danger
             if (wind[2])
             {
                 tmpLattice[y + 1][x - even].wind[5] = true;
             }
             if (wind[3])
             {
-                tmpLattice[y + 2][x].wind[0] = true;
+                // check if solid
+                if (lattice[y + 2][x].solid)
+                {
+                    if (lattice[y + 1][x + !even].solid && !lattice[y + 1][x - even].solid)
+                    {
+                        tmpLattice[y - 1][x - even].wind[4] = true;
+                    }
+                    else if (!lattice[y + 1][x + !even].solid && lattice[y + 1][x - even].solid)
+                    {
+                        tmpLattice[y - 1][x + !even].wind[2] = true;
+                    }
+                    else
+                    {
+                        tmpLattice[y - 2][x].wind[3] = true;
+                    }
+                }
+                // aint solid
+                else
+                {
+                    tmpLattice[y + 2][x].wind[0] = true;
+                }
             }
             if (wind[4])
             {
@@ -138,17 +219,19 @@ void latticeStep(Lattice &lattice)
     // propagation
     latticeStepPropagation(lattice);
 
-    // collision
+    // wind collision
     for (int y = 2; y < LATTICE_HEIGHT * 2 + 2; y++)
     {
+        // cout << "============Y " << y << " =============" << endl;
         for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++)
         {
+            // cout << x << "\n";
             auto wind = lattice[y][x].wind;
             //   \ _
             //   /
             if (wind[0] && wind[2] && wind[4] && !wind[1] && !wind[3] && !wind[5])
             {
-                break;
+                continue;
             }
 
             //   _ /
@@ -156,7 +239,7 @@ void latticeStep(Lattice &lattice)
 
             if (!wind[0] && !wind[2] && !wind[4] && wind[1] && wind[3] && wind[5])
             {
-                break;
+                continue;
             }
 
             //   \  
@@ -176,7 +259,7 @@ void latticeStep(Lattice &lattice)
                     lattice[y][x].wind[0] = true;
                     lattice[y][x].wind[3] = true;
                 }
-                break;
+                continue;
             }
 
             //    /
@@ -196,7 +279,7 @@ void latticeStep(Lattice &lattice)
                     lattice[y][x].wind[0] = true;
                     lattice[y][x].wind[3] = true;
                 }
-                break;
+                continue;
             }
 
             //   |
@@ -215,7 +298,7 @@ void latticeStep(Lattice &lattice)
                     lattice[y][x].wind[2] = true;
                     lattice[y][x].wind[5] = true;
                 }
-                break;
+                continue;
             }
 
             bool tmpWind[6]{};
@@ -230,13 +313,13 @@ void latticeStep(Lattice &lattice)
     }
 
     //generate new wind particles
-    for (int i = 0; i < WIND_STRENGTH; i++)
-    {
-        int directions[2] = {4, 5};
-        auto place = rand() % LATTICE_HEIGHT * 2;
-        auto direction = directions[rand() % 2];
-        lattice[place][1].wind[direction] = true;
-    }
+    // for (int i = 0; i < WIND_STRENGTH; i++)
+    // {
+    //     int directions[2] = {4, 5};
+    //     auto place = rand() % LATTICE_HEIGHT * 2;
+    //     auto direction = directions[rand() % 2];
+    //     lattice[place][1].wind[direction] = true;
+    // }
 
     // for (int i = 0; i < WIND_STRENGTH; i++)
     // {
@@ -265,14 +348,12 @@ void latticeStep(Lattice &lattice)
     // lattice[2][20].wind[4] = true;
     // lattice[62][30].wind[0] = true;
 
-    // restore the border
-    lattice[0] = vector<LatticeCell>(LATTICE_WIDTH / 2 + 1);
-    lattice[LATTICE_HEIGHT * 2 + 3] = vector<LatticeCell>(LATTICE_WIDTH / 2 + 1);
-    for (int i = 0; i < LATTICE_HEIGHT; i++)
-    {
-        lattice[i + 1][0] = LatticeCell{};
-        lattice[i + 1][LATTICE_WIDTH / 2 + 1] = LatticeCell{};
-    }
+    // lattice[50][25].wind[0] = true;
+    // lattice[50][25].wind[1] = true;
+    // lattice[50][25].wind[2] = true;
+    // lattice[50][25].wind[3] = true;
+    // lattice[50][25].wind[4] = true;
+    lattice[50][25].wind[5] = true;
 }
 
 void buildScene()
@@ -280,6 +361,22 @@ void buildScene()
     scene = vector<vector<bool>>(LATTICE_HEIGHT, vector<bool>(LATTICE_WIDTH, false));
 
     scene[LATTICE_HEIGHT - 1] = vector<bool>(LATTICE_WIDTH, true);
+
+    // scene[7][80] = true;
+    // scene[7][81] = true;
+    // scene[8][81] = true;
+
+    // scene[7][15] = true;
+    // scene[7][16] = true;
+    // scene[8][15] = true;
+
+    // scene[9][48] = true;
+    // scene[9][49] = true;
+    // scene[9][47] = true;
+
+    // scene[40][78] = true;
+    // scene[39][77] = true;
+    // scene[39][79] = true;
 }
 
 int main(int argc, char *argv[])
@@ -293,14 +390,13 @@ int main(int argc, char *argv[])
     Mat toShow(Size(LATTICE_WIDTH / 2 * 4 + LATTICE_WIDTH + 1, LATTICE_HEIGHT * 4 + 4), CV_8U);
     Lattice lattice(LATTICE_HEIGHT, LATTICE_WIDTH, scene);
 
-    lattice[2][40].wind[2] = true;
-    lattice[2][20].wind[4] = true;
-    lattice[62][30].wind[0] = true;
     // show
     namedWindow("image", WINDOW_NORMAL);
     // namedWindow("image2", WINDOW_NORMAL);
+    int a = 0;
     while (true)
     {
+        auto b = lattice[96][48].wind[1];
         latticeStep(lattice);
         toMat(lattice, latticeMat);
         toCartesian(latticeMat, toShow);
@@ -310,6 +406,7 @@ int main(int argc, char *argv[])
         {
             break;
         }
+        a++;
     }
     // toMat(lattice, latticeMat);
     // toCartesian(latticeMat, toShow);

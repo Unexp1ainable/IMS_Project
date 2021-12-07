@@ -4,7 +4,7 @@ Lattice::Lattice(const int height, const int width, vector<vector<bool>> scene) 
                                                                                   _height(height),
                                                                                   _scene(scene)
 {
-    _cells = vector<vector<LatticeCell>>(height * 2 + 4, vector<LatticeCell>(width / 2 + 2));
+    _cells = vector<vector<LatticeCell>>(height * 2 + 4, vector<LatticeCell>(width / 2 + 2, false));
     for (int y = 2; y < _height * 2 + 2; y++)
     {
         for (int x = 1; x < _width / 2 + 1; x++)
