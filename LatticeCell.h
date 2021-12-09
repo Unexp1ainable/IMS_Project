@@ -31,10 +31,12 @@ public:
     unsigned erosion = 0;
 
     /**
-     * @brief Decrements erosion counter, unless it is 0. 
+     * @brief Decrements erosion counter, unless it is 0.
      * If the counter reaches 0, solid property is set to false.
+     *
+     * @param direction Escape vector of the wind, to be set into the cell.
      */
-    void decrementCounter()
+    void decrementCounter(int direction)
     {
         if (!snow)
             return;
@@ -44,7 +46,13 @@ public:
         }
         if (!erosion)
         {
+            for (int i = 0; i < 6; i++)
+            {
+                wind[i] = false;
+            }
+            wind[direction] = true;
             solid = false;
+            std::cout << "eroded\n";
         }
     }
 };
