@@ -115,18 +115,18 @@ void latticeStepPropagation(Lattice &lattice)
                 {
                     if (lattice[y - 1][x + !even].solid && !lattice[y - 1][x - even].solid)
                     {
-                        tmpLattice[y + 1][x - even].wind[5] = true;
-                        escapeVector = 5;
+                        tmpLattice[y + 1][x - even].wind[2] = true;
+                        escapeVector = 2;
                     }
                     else if (!lattice[y - 1][x + !even].solid && lattice[y - 1][x - even].solid)
                     {
-                        tmpLattice[y - 1][x + !even].wind[1] = true;
-                        escapeVector = 1;
+                        tmpLattice[y + 1][x + !even].wind[4] = true;
+                        escapeVector = 4;
                     }
                     else
                     {
-                        tmpLattice[y + 2][x].wind[0] = true;
-                        escapeVector = 0;
+                        tmpLattice[y + 2][x].wind[3] = true;
+                        escapeVector = 3;
                     }
 
                     // decrement counter of the hit particle if it was snow and assign escape vector
@@ -135,7 +135,7 @@ void latticeStepPropagation(Lattice &lattice)
                 // aint solid
                 else
                 {
-                    tmpLattice[y - 2][x].wind[3] = true;
+                    tmpLattice[y - 2][x].wind[0] = true;
                 }
             }
             if (wind[1])
@@ -145,18 +145,18 @@ void latticeStepPropagation(Lattice &lattice)
                 {
                     if (lattice[y + 1][x - even].solid && !lattice[y - 2][x].solid)
                     {
-                        tmpLattice[y - 1][x + !even].wind[2] = true;
-                        escapeVector = 2;
+                        tmpLattice[y - 1][x + !even].wind[5] = true;
+                        escapeVector = 5;
                     }
                     else if (!lattice[y + 1][x - even].solid && lattice[y - 2][x].solid)
                     {
-                        tmpLattice[y + 1][x - even].wind[5] = true;
-                        escapeVector = 5;
+                        tmpLattice[y + 1][x - even].wind[2] = true;
+                        escapeVector = 2;
                     }
                     else
                     {
-                        tmpLattice[y + 1][x + !even].wind[1] = true;
-                        escapeVector = 1;
+                        tmpLattice[y + 1][x + !even].wind[4] = true;
+                        escapeVector = 4;
                     }
 
                     // decrement counter of the hit particle if it was snow and assign escape vector
@@ -165,7 +165,7 @@ void latticeStepPropagation(Lattice &lattice)
                 // aint solid
                 else
                 {
-                    tmpLattice[y - 1][x - even].wind[4] = true;
+                    tmpLattice[y - 1][x - even].wind[1] = true;
                 }
             }
             if (wind[5])
@@ -175,18 +175,18 @@ void latticeStepPropagation(Lattice &lattice)
                 {
                     if (lattice[y + 1][x + !even].solid && !lattice[y - 2][x].solid)
                     {
-                        tmpLattice[y - 1][x - even].wind[4] = true;
-                        escapeVector = 4;
-                    }
-                    else if (!lattice[y + 1][x + !even].solid && lattice[y - 2][x].solid)
-                    {
                         tmpLattice[y - 1][x - even].wind[1] = true;
                         escapeVector = 1;
                     }
+                    else if (!lattice[y + 1][x + !even].solid && lattice[y - 2][x].solid)
+                    {
+                        tmpLattice[y + 1][x + !even].wind[4] = true;
+                        escapeVector = 4;
+                    }
                     else
                     {
-                        tmpLattice[y + 1][x - even].wind[5] = true;
-                        escapeVector = 5;
+                        tmpLattice[y + 1][x - even].wind[2] = true;
+                        escapeVector = 2;
                     }
                     // decrement counter of the hit particle if it was snow and assign escape vector
                     lattice[y - 2][x].decrementCounter(escapeVector);
@@ -194,7 +194,7 @@ void latticeStepPropagation(Lattice &lattice)
                 // aint solid
                 else
                 {
-                    tmpLattice[y - 1][x + !even].wind[2] = true;
+                    tmpLattice[y - 1][x + !even].wind[5] = true;
                 }
             }
             if (wind[2])
@@ -204,18 +204,18 @@ void latticeStepPropagation(Lattice &lattice)
                 {
                     if (lattice[y - 1][x - even].solid && !lattice[y + 2][x].solid)
                     {
-                        tmpLattice[y + 1][x + !even].wind[1] = true;
-                        escapeVector = 1;
+                        tmpLattice[y + 1][x + !even].wind[4] = true;
+                        escapeVector = 4;
                     }
                     else if (!lattice[y - 1][x - even].solid && lattice[y + 2][x].solid)
                     {
-                        tmpLattice[y - 1][x - even].wind[4] = true;
-                        escapeVector = 4;
+                        tmpLattice[y - 1][x - even].wind[1] = true;
+                        escapeVector = 1;
                     }
                     else
                     {
-                        tmpLattice[y - 1][x + !even].wind[2] = true;
-                        escapeVector = 2;
+                        tmpLattice[y - 1][x + !even].wind[5] = true;
+                        escapeVector = 5;
                     }
                     // decrement counter of the hit particle if it was snow and assign escape vector
                     lattice[y - 2][x].decrementCounter(escapeVector);
@@ -223,7 +223,7 @@ void latticeStepPropagation(Lattice &lattice)
                 // aint solid
                 else
                 {
-                    tmpLattice[y + 1][x - even].wind[5] = true;
+                    tmpLattice[y + 1][x - even].wind[2] = true;
                 }
             }
             if (wind[3])
@@ -233,18 +233,18 @@ void latticeStepPropagation(Lattice &lattice)
                 {
                     if (lattice[y + 1][x + !even].solid && !lattice[y + 1][x - even].solid)
                     {
-                        tmpLattice[y - 1][x - even].wind[4] = true;
-                        escapeVector = 4;
+                        tmpLattice[y - 1][x - even].wind[1] = true;
+                        escapeVector = 1;
                     }
                     else if (!lattice[y + 1][x + !even].solid && lattice[y + 1][x - even].solid)
                     {
-                        tmpLattice[y - 1][x + !even].wind[2] = true;
-                        escapeVector = 2;
+                        tmpLattice[y - 1][x + !even].wind[5] = true;
+                        escapeVector = 5;
                     }
                     else
                     {
-                        tmpLattice[y - 2][x].wind[3] = true;
-                        escapeVector = 3;
+                        tmpLattice[y - 2][x].wind[0] = true;
+                        escapeVector = 0;
                     }
                     // decrement counter of the hit particle if it was snow and assign escape vector
                     lattice[y - 2][x].decrementCounter(escapeVector);
@@ -252,7 +252,7 @@ void latticeStepPropagation(Lattice &lattice)
                 // aint solid
                 else
                 {
-                    tmpLattice[y + 2][x].wind[0] = true;
+                    tmpLattice[y + 2][x].wind[3] = true;
                 }
             }
             if (wind[4])
@@ -262,18 +262,18 @@ void latticeStepPropagation(Lattice &lattice)
                 {
                     if (lattice[y - 1][x + !even].solid && !lattice[y + 2][x].solid)
                     {
-                        tmpLattice[y + 1][x - even].wind[5] = true;
-                        escapeVector = 5;
+                        tmpLattice[y + 1][x - even].wind[2] = true;
+                        escapeVector = 2;
                     }
                     else if (!lattice[y - 1][x + !even].solid && lattice[y + 2][x].solid)
                     {
-                        tmpLattice[y - 1][x + !even].wind[2] = true;
-                        escapeVector = 2;
+                        tmpLattice[y - 1][x + !even].wind[5] = true;
+                        escapeVector = 5;
                     }
                     else
                     {
-                        tmpLattice[y - 1][x - even].wind[4] = true;
-                        escapeVector = 4;
+                        tmpLattice[y - 1][x - even].wind[1] = true;
+                        escapeVector = 1;
                     }
                     // decrement counter of the hit particle if it was snow and assign escape vector
                     lattice[y + 1][x + !even].decrementCounter(escapeVector);
@@ -281,7 +281,7 @@ void latticeStepPropagation(Lattice &lattice)
                 // aint solid
                 else
                 {
-                    tmpLattice[y + 1][x + !even].wind[1] = true;
+                    tmpLattice[y + 1][x + !even].wind[4] = true;
                 }
             }
 
@@ -334,6 +334,7 @@ void latticeStepPropagation(Lattice &lattice)
                             snowVector = vectorSum / windParticleCount;
                         }
                     }
+
                     auto v = static_cast<Direction>(snowVector);
                     int xcoord, ycoord;
                     // get target cell
@@ -438,6 +439,13 @@ void latticeStep(Lattice &lattice)
             //   /
             if (wind[0] && wind[2] && wind[4] && !wind[1] && !wind[3] && !wind[5])
             {
+                wind[0] = false;
+                wind[2] = false;
+                wind[4] = false;
+
+                wind[1] = true;
+                wind[3] = true;
+                wind[5] = true;
                 continue;
             }
 
@@ -446,6 +454,13 @@ void latticeStep(Lattice &lattice)
 
             if (!wind[0] && !wind[2] && !wind[4] && wind[1] && wind[3] && wind[5])
             {
+                wind[0] = true;
+                wind[2] = true;
+                wind[4] = true;
+
+                wind[1] = false;
+                wind[3] = false;
+                wind[5] = false;
                 continue;
             }
 
@@ -507,15 +522,6 @@ void latticeStep(Lattice &lattice)
                 }
                 continue;
             }
-
-            bool tmpWind[6]{};
-            tmpWind[3] = wind[0];
-            tmpWind[4] = wind[1];
-            tmpWind[5] = wind[2];
-            tmpWind[0] = wind[3];
-            tmpWind[1] = wind[4];
-            tmpWind[2] = wind[5];
-            memcpy(lattice[y][x].wind, tmpWind, sizeof(tmpWind));
         }
     }
 
@@ -528,6 +534,13 @@ void latticeStep(Lattice &lattice)
         lattice[place][1].wind[direction] = true;
         // lattice[750][300].snow = true;
     }
+
+    // lattice[50][25].wind[0] = true;
+    // lattice[50][25].wind[1] = true;
+    // lattice[50][25].wind[2] = true;
+    // lattice[50][25].wind[3] = true;
+    // lattice[50][25].wind[4] = true;
+    // lattice[50][25].wind[5] = true;
 }
 
 void buildScene()
@@ -554,29 +567,35 @@ void buildScene()
     //     scene[i][LATTICE_WIDTH - 1] = true;
     // };
 
+    // downright
     // scene[39][81] = true;
     // scene[40][81] = true;
     // scene[41][80] = true;
 
+    // downleft
     // scene[39][16] = true;
     // scene[40][16] = true;
     // scene[40][17] = true;
 
+    // upright
     // scene[7][80] = true;
     // scene[7][81] = true;
     // scene[8][81] = true;
 
-    // scene[7][15] = true;
+    // upleft
     // scene[7][16] = true;
+    // scene[7][15] = true;
     // scene[8][15] = true;
 
-    // scene[9][48] = true;
+    // up
     // scene[9][49] = true;
+    // scene[9][48] = true;
     // scene[9][47] = true;
 
-    // scene[40][78] = true;
-    // scene[39][77] = true;
-    // scene[39][79] = true;
+    // down
+    // scene[38][49] = true;
+    // scene[39][48] = true;
+    // scene[38][47] = true;
 }
 
 int main(int argc, char *argv[])
