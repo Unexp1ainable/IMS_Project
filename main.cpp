@@ -1,7 +1,5 @@
 #include <iostream>
 #include <vector>
-#include "intrin.h"
-// #include "opencv4/opencv2/opencv.hpp"
 #include "opencv2/opencv.hpp"
 
 #include "Lattice.h"
@@ -167,8 +165,6 @@ void latticeStepPropagation(Lattice &lattice)
                         }
                         else
                         {
-                            if (tmpLattice[y + 2][x].wind[3])
-                                __debugbreak();
                             tmpLattice[y + 2][x].wind[3] = true;
                             escapeVector = 3;
                         }
@@ -287,8 +283,6 @@ void latticeStepPropagation(Lattice &lattice)
                         }
                         else
                         {
-                            if (tmpLattice[y - 2][x].wind[0])
-                                __debugbreak();
                             tmpLattice[y - 2][x].wind[0] = true;
                             escapeVector = 0;
                         }
@@ -722,7 +716,7 @@ int main(int argc, char *argv[])
     int a = 0;
     while (true)
     {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 5; i++)
             latticeStep(lattice);
         toMat(lattice, latticeMat);
         toCartesian(latticeMat, toShow);
