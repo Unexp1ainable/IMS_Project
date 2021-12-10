@@ -52,7 +52,6 @@ public:
             }
             wind[direction] = true;
             solid = false;
-            std::cout << "eroded\n";
         }
     }
 };
