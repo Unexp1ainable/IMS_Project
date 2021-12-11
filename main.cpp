@@ -10,7 +10,7 @@ using namespace std;
 
 #define LATTICE_WIDTH 900
 #define LATTICE_HEIGHT 100
-#define COHESION 4
+#define COHESION 5
 #define GRAVITY 8
 
 int wind_strength;  // must be between 0-LATTICE_HEIGHT

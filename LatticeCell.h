@@ -81,10 +81,15 @@ class LatticeCell {
             return -1;
         } else {
             int error = shift % windParticleCount;
+            int result;
             if (rand() % 2)
-                return ref + shift / windParticleCount;
+                result = ref + shift / windParticleCount;
             else
-                return ref + (error + shift) / windParticleCount;
+                result = ref + (error + shift) / windParticleCount;
+
+            if (result <= 0)
+                result = 6 + result;
+            return result % 6;
         }
     }
 };
