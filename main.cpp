@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 #define LATTICE_WIDTH 900
-#define LATTICE_HEIGHT 200
+#define LATTICE_HEIGHT 100
 #define COHESION 4
 #define GRAVITY 8
 
@@ -83,6 +83,79 @@ size_t countParticles(Lattice& lattice) {
         }
     }
     return count;
+}
+
+pair<int, int> shiftVector(int x, int y, Direction v, bool left) {
+    int xcoord, ycoord;
+    bool even = y % 2;
+    switch (v) {
+        case Direction::UP:
+            if (left) {
+                xcoord = x - even;
+                ycoord = y + 1;
+            } else {
+                xcoord = x + !even;
+                ycoord = y + 1;
+            }
+            break;
+
+        case Direction::UPLEFT:
+            if (left) {
+                xcoord = x + !even;
+                ycoord = y - 1;
+            } else {
+                xcoord = x;
+                ycoord = y + 2;
+            }
+            break;
+
+        case Direction::DOWNLEFT:
+            if (left) {
+                xcoord = x + !even;
+                ycoord = y + 1;
+            } else {
+                xcoord = x;
+                ycoord = y - 2;
+            }
+            break;
+
+        case Direction::DOWN:
+            if (left) {
+                xcoord = x - !even;
+                ycoord = y - 1;
+            } else {
+                xcoord = x + even;
+                ycoord = y - 1;
+            }
+            break;
+
+        case Direction::DOWNRIGHT:
+            if (left) {
+                xcoord = x;
+                ycoord = y - 2;
+            } else {
+                xcoord = x - even;
+                ycoord = y + 1;
+            }
+            break;
+
+        case Direction::UPRIGHT:
+            if (left) {
+                xcoord = x - even;
+                ycoord = y - 1;
+            } else {
+                xcoord = x;
+                ycoord = y + 2;
+            }
+            break;
+
+        default:
+            xcoord = x;
+            ycoord = y;
+            break;
+    }
+
+    return make_pair(xcoord, ycoord);
 }
 
 void latticeStepPropagation(Lattice& lattice) {
@@ -317,9 +390,8 @@ void latticeStepPropagation(Lattice& lattice) {
                             break;
 
                         default:
-                            xcoord = x;
-                            ycoord = y;
-                            break;
+                            tmpLattice[y][x].snow = true;
+                            continue;
                     }
 
                     // if target cell is solid, check for stable position
@@ -355,20 +427,34 @@ void latticeStepPropagation(Lattice& lattice) {
                         else {
                             if (lattice[y + 2][x].snow || tmpLattice[y + 2][x].snow) {
                                 tmpLattice[y][x].snow = true;
-                            } else {
+                            }
+
+                            else {
                                 tmpLattice[y + 2][x].snow = true;
                             }
                         }
                     } else {
                         // move
-                        if (xcoord > LATTICE_WIDTH / 2 - 1 && ycoord < LATTICE_HEIGHT * 10 / 6)
+                        if (xcoord > LATTICE_WIDTH / 2 - 1)
+                            // if (xcoord > LATTICE_WIDTH / 2 - 1 && ycoord < LATTICE_HEIGHT * 10 / 6)
                             xcoord = 2;
 
-                        // if (xcoord > 2)
-                        //     LATTICE_WIDTH / 2 - 2;
-
                         if (lattice[ycoord][xcoord].snow || tmpLattice[ycoord][xcoord].snow) {
-                            tmpLattice[y][x].snow = true;
+                            auto left = shiftVector(xcoord, ycoord, v, true);
+                            if (!lattice[left.second][left.first].snow && !tmpLattice[left.second][left.first].snow && !lattice[left.second][left.first].solid) {
+                                tmpLattice[left.second][left.first].snow = true;
+                                continue;
+                            }
+
+                            auto right = shiftVector(xcoord, ycoord, v, false);
+                            if (!lattice[right.second][right.first].snow && !tmpLattice[right.second][right.first].snow && !lattice[right.second][right.first].solid) {
+                                tmpLattice[right.second][right.first].snow = true;
+                                continue;
+                            } else {
+                                tmpLattice[y][x].snow = true;
+                                continue;
+                            }
+
                         } else {
                             tmpLattice[ycoord][xcoord].snow = true;
                         }
@@ -523,6 +609,16 @@ void setScene(const int which) {
         sceneStick(scene);
     } else if (which == 3) {
         sceneHouse(scene);
+    } else if (which == 4) {
+        sceneOpenHouse(scene);
+    } else if (which == 5) {
+        sceneOpenWindow(scene);
+    } else if (which == 6) {
+        sceneWindBreakers1(scene);
+    } else if (which == 7) {
+        sceneWindBreakers2(scene);
+    } else if (which == 8) {
+        sceneWindBreaker(scene);
     }
     return;
 }
@@ -530,14 +626,14 @@ void setScene(const int which) {
 void init() {
     setScene(0);
     wind_strength = LATTICE_HEIGHT / 3;
-    snow_strength = LATTICE_WIDTH / 20;
+    snow_strength = LATTICE_WIDTH / 30;
 }
 
 void printHelp() {
     cout << "======================================\n";
     cout << "Cellular automata: snow & wind\n\n";
     cout << "In-simulation controls: \n";
-    cout << "\tNumpad 0-5: pick scene\n";
+    cout << "\t0-5: pick scene\n";
     cout << "\t+-: simulation speed\n";
     cout << "\tp: pause\n\n";
     cout << "\tw: stronger wind\n";
@@ -663,8 +759,18 @@ int main(int argc, char* argv[]) {
         // 5
         else if (k == 53) {
             setScene(5);
-        } else if (k != -1) {
-            cout << k << endl;
+        }
+        // 6
+        else if (k == 54) {
+            setScene(6);
+        }
+        // 7
+        else if (k == 55) {
+            setScene(7);
+        }
+        // 8
+        else if (k == 56) {
+            setScene(8);
         }
     }
 
