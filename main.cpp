@@ -639,6 +639,7 @@ void printHelp() {
     cout << "======================================\n";
     cout << "Cellular automata: snow & wind\n\n";
     cout << "In-simulation controls: \n";
+    cout << "\tESC: terminate simulation and close the program\n\n";
     cout << "\t0-8: pick scene\n";
     cout << "\t+-: simulation speed\n";
     cout << "\tp: pause\n\n";
