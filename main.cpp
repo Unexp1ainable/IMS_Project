@@ -43,12 +43,6 @@ void toCartesian(const Mat& hex, Mat& dst) {
             stamp(x, y, state);
         }
     }
-
-    // cv::putText(dst, "Wind strength: ", Point(10, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
-    // cv::putText(dst, "Snow strength: ", Point(10, 40), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
-    // cv::putText(dst, "Sim speed:  ", Point(10, 60), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
-
-    // cv::putText(dst, "Paused ", Point(10, 80), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
 }
 
 void toMat(const Lattice& lattice, Mat& latticeMat) {
@@ -85,6 +79,15 @@ size_t countParticles(Lattice& lattice) {
     return count;
 }
 
+/**
+ * @brief Shift vector one place to the right or to the left.
+ *
+ * @param x X coordinate of the place, where snow wants to go
+ * @param y Y coordinate of the place, where snow wants to go
+ * @param v Vector that pointed to that place
+ * @param left Directionn. left if true, right if false
+ * @return pair<int, int> (x,y) of the new place
+ */
 pair<int, int> shiftVector(int x, int y, Direction v, bool left) {
     int xcoord, ycoord;
     bool even = y % 2;
@@ -439,13 +442,16 @@ void latticeStepPropagation(Lattice& lattice) {
                             // if (xcoord > LATTICE_WIDTH / 2 - 1 && ycoord < LATTICE_HEIGHT * 10 / 6)
                             xcoord = 2;
 
+                        // check if new place is not already taken
                         if (lattice[ycoord][xcoord].snow || tmpLattice[ycoord][xcoord].snow) {
                             auto left = shiftVector(xcoord, ycoord, v, true);
+                            // check place on the left
                             if (!lattice[left.second][left.first].snow && !tmpLattice[left.second][left.first].snow && !lattice[left.second][left.first].solid) {
                                 tmpLattice[left.second][left.first].snow = true;
                                 continue;
                             }
 
+                            // check place on the right
                             auto right = shiftVector(xcoord, ycoord, v, false);
                             if (!lattice[right.second][right.first].snow && !tmpLattice[right.second][right.first].snow && !lattice[right.second][right.first].solid) {
                                 tmpLattice[right.second][right.first].snow = true;
