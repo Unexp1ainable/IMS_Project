@@ -7,6 +7,7 @@ using WindCell = bool;
 
 enum class Direction
 {
+    NONE = -1,
     UP,
     UPLEFT,
     DOWNLEFT,
@@ -18,7 +19,9 @@ enum class Direction
 class LatticeCell
 {
 public:
-    LatticeCell(const bool solid_ = false) : solid(solid_) {}
+    LatticeCell(const bool solid_ = false)
+      : solid(solid_)
+    {}
     /**
           0
        1  |  5
@@ -40,18 +43,54 @@ public:
     {
         if (!snow)
             return;
-        if (erosion)
-        {
+        if (erosion) {
             erosion--;
         }
-        if (!erosion)
-        {
-            for (int i = 0; i < 6; i++)
-            {
+        if (!erosion) {
+            for (int i = 0; i < 6; i++) {
                 wind[i] = false;
             }
             wind[direction] = true;
             solid = false;
         }
     }
+
+    int getVector()
+    {
+        // mean wind & gravity
+        int windParticleCount = 0;
+        int shift = 0;
+        int ref = -1;
+        for (int i = 0; i < 6; i++) {
+            if (wind[i]) {
+                // ignore vector if it has opposite vector
+                if (wind[(i + 3) % 6])
+                    continue;
+                // set reference vector
+                if (ref == -1) {
+                    ref = i;
+                } else {
+                    int r1 = i - ref;
+                    int r2 = -6 + r1;
+                    int r = r1 <= -r2 ? r1 : r2;
+                    if (r == 3) {
+                        windParticleCount -= 2;
+                    } else {
+                        shift += r;
+                    }
+                }
+                windParticleCount++;
+            }
+        }
+        if (ref == -1 || windParticleCount == 0 || (shift == 0 && windParticleCount != 1)) {
+            return -1;
+        } else {
+            auto tmpShift = shift + _error;
+            _error += tmpShift % windParticleCount;
+            return ref + tmpShift / windParticleCount;
+        }
+    }
+
+protected:
+    int _error = 0;
 };

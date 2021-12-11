@@ -3,3 +3,5 @@ build
 CMakeFiles
 build/CMakeFiles/IMS.dir/main.cpp.o
 build/IMS
+test.py
+__pycache__

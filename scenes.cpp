@@ -18,8 +18,8 @@ void sceneFloatingStick(vector<vector<bool>>& scene) {
     size_t height = scene.size();
     size_t width = scene[0].size();
     for (size_t i = 0; i < height / 2; i++) {
-        scene[height - i - 1 - height / 20][width / 2] = true;
-        scene[height - i - 1 - height / 20][width / 2 + 1] = true;
+        scene[height - i - 1 - height / 20][width / 3] = true;
+        scene[height - i - 1 - height / 20][width / 3 + 1] = true;
     }
 }
 
