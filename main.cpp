@@ -10,7 +10,7 @@ using namespace std;
 
 #define LATTICE_WIDTH 900
 #define LATTICE_HEIGHT 200
-#define COHESION 8
+#define COHESION 4
 #define GRAVITY 8
 
 int wind_strength;  // must be between 0-LATTICE_HEIGHT
@@ -18,7 +18,7 @@ int snow_strength;  // must be between 0-LATTICE_WIDTH
 vector<vector<bool>> scene{};
 bool snowing = false;
 
-void toCartesian(const Mat &hex, Mat &dst) {
+void toCartesian(const Mat& hex, Mat& dst) {
     auto stamp = [&](int x, int y, uint8_t state) {
         dst.at<uint8_t>(y + 1, x) = state;
         dst.at<uint8_t>(y + 2, x) = state;
@@ -43,9 +43,15 @@ void toCartesian(const Mat &hex, Mat &dst) {
             stamp(x, y, state);
         }
     }
+
+    // cv::putText(dst, "Wind strength: ", Point(10, 20), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
+    // cv::putText(dst, "Snow strength: ", Point(10, 40), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
+    // cv::putText(dst, "Sim speed:  ", Point(10, 60), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
+
+    // cv::putText(dst, "Paused ", Point(10, 80), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255), 2);
 }
 
-void toMat(const Lattice &lattice, Mat &latticeMat) {
+void toMat(const Lattice& lattice, Mat& latticeMat) {
     for (int y = 2; y < LATTICE_HEIGHT * 2 + 2; y++) {
         for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++) {
             auto wind = lattice[y][x].wind;
@@ -66,7 +72,7 @@ void toMat(const Lattice &lattice, Mat &latticeMat) {
     }
 }
 
-size_t countParticles(Lattice &lattice) {
+size_t countParticles(Lattice& lattice) {
     size_t count = 0;
     for (int y = 2; y < LATTICE_HEIGHT * 2 + 2; y++) {
         // cout << "============Y " << y << " =============" << endl;
@@ -79,7 +85,7 @@ size_t countParticles(Lattice &lattice) {
     return count;
 }
 
-void latticeStepPropagation(Lattice &lattice) {
+void latticeStepPropagation(Lattice& lattice) {
     // flip vertical direction of the wind particles that are about to collide with the sky
     for (int x = 1; x < LATTICE_WIDTH / 2 + 1; x++) {
         auto wind = lattice[2][x].wind;
@@ -355,11 +361,11 @@ void latticeStepPropagation(Lattice &lattice) {
                         }
                     } else {
                         // move
-                        // if (xcoord > LATTICE_WIDTH / 2 - 1)
-                        //     xcoord = 2;
+                        if (xcoord > LATTICE_WIDTH / 2 - 1 && ycoord < LATTICE_HEIGHT * 10 / 6)
+                            xcoord = 2;
 
-                        if (xcoord > 2)
-                            LATTICE_WIDTH / 2 - 2;
+                        // if (xcoord > 2)
+                        //     LATTICE_WIDTH / 2 - 2;
 
                         if (lattice[ycoord][xcoord].snow || tmpLattice[ycoord][xcoord].snow) {
                             tmpLattice[y][x].snow = true;
@@ -375,7 +381,7 @@ void latticeStepPropagation(Lattice &lattice) {
     lattice = std::move(tmpLattice);
 }
 
-void latticeStep(Lattice &lattice) {
+void latticeStep(Lattice& lattice) {
     // Lattice tmpLattice(LATTICE_HEIGHT, LATTICE_WIDTH);
 
     // wind step - FHP
@@ -496,6 +502,12 @@ void latticeStep(Lattice &lattice) {
             auto place = rand() % (LATTICE_WIDTH / 2 - 1);
             lattice[2][place].snow = true;
         }
+
+        // for (int i = 0; i < snow_strength / 3; i++) {
+        //     auto place = rand() % (LATTICE_HEIGHT * 2 - 1);
+        //     if (place < LATTICE_HEIGHT * 9 / 5)
+        //         lattice[place][2].snow = true;
+        // }
     }
 }
 
@@ -507,6 +519,10 @@ void setScene(const int which) {
     if (which == 0) {
     } else if (which == 1) {
         sceneFloatingStick(scene);
+    } else if (which == 2) {
+        sceneStick(scene);
+    } else if (which == 3) {
+        sceneHouse(scene);
     }
     return;
 }
@@ -517,9 +533,25 @@ void init() {
     snow_strength = LATTICE_WIDTH / 20;
 }
 
-int main(int argc, char *argv[]) {
+void printHelp() {
+    cout << "======================================\n";
+    cout << "Cellular automata: snow & wind\n\n";
+    cout << "In-simulation controls: \n";
+    cout << "\tNumpad 0-5: pick scene\n";
+    cout << "\t+-: simulation speed\n";
+    cout << "\tp: pause\n\n";
+    cout << "\tw: stronger wind\n";
+    cout << "\ts: gentler wind\n\n";
+    cout << "\tw: stronger snowing\n";
+    cout << "\ts: gentler snowing\n\n";
+    cout << "\tspacebar: toggle snowing\n";
+}
+
+int main(int argc, char* argv[]) {
     assert(LATTICE_WIDTH != 0);
     assert(LATTICE_HEIGHT != 0);
+
+    printHelp();
 
     int timeWarp = 11;
     int timeIterations = 1;
@@ -581,13 +613,13 @@ int main(int argc, char *argv[]) {
             pause = !pause;
         }
         // wind strength
-        // 7
-        else if (k == 55) {
+        // w
+        else if (k == 119) {
             if (wind_strength < LATTICE_HEIGHT - 5)
                 wind_strength += 5;
         }
-        // 4
-        else if (k == 52) {
+        // s
+        else if (k == 115) {
             if (wind_strength > 5)
                 wind_strength -= 5;
             else
@@ -595,13 +627,13 @@ int main(int argc, char *argv[]) {
         }
 
         // snow strength
-        // 9
-        else if (k == 57) {
+        // e
+        else if (k == 101) {
             if (snow_strength < LATTICE_WIDTH - 5)
                 snow_strength += 5;
         }
-        // 6
-        else if (k == 54) {
+        // d
+        else if (k == 100) {
             if (snow_strength > 5)
                 snow_strength -= 5;
             else
@@ -615,6 +647,24 @@ int main(int argc, char *argv[]) {
         // 1
         else if (k == 49) {
             setScene(1);
+        }
+        // 2
+        else if (k == 50) {
+            setScene(2);
+        }
+        // 3
+        else if (k == 51) {
+            setScene(3);
+        }
+        // 4
+        else if (k == 52) {
+            setScene(4);
+        }
+        // 5
+        else if (k == 53) {
+            setScene(5);
+        } else if (k != -1) {
+            cout << k << endl;
         }
     }
 

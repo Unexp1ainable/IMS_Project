@@ -18,11 +18,46 @@ void sceneFloatingStick(vector<vector<bool>>& scene) {
     size_t height = scene.size();
     size_t width = scene[0].size();
     for (size_t i = 0; i < height / 2; i++) {
-        scene[height - i - 1 - height / 20][width / 3] = true;
-        scene[height - i - 1 - height / 20][width / 3 + 1] = true;
+        scene[height - i - 1 - height / 15][width / 3] = true;
+        scene[height - i - 1 - height / 15][width / 3 + 1] = true;
     }
 }
 
+void sceneStick(vector<vector<bool>>& scene) {
+    size_t height = scene.size();
+    size_t width = scene[0].size();
+    for (size_t i = 0; i < height / 2; i++) {
+        scene[height - i - 1][width / 3] = true;
+        scene[height - i - 1][width / 3 + 1] = true;
+    }
+}
+
+void sceneHouse(vector<vector<bool>>& scene) {
+    size_t height = scene.size();
+    size_t width = scene[0].size();
+    for (size_t i = 0; i < height / 3; i++) {
+        scene[height - i - 1][width / 3] = true;
+        scene[height - i - 1][width / 3 + 1] = true;
+
+        scene[height - i - 1][width / 3 * 2] = true;
+        scene[height - i - 1][width / 3 * 2 + 1] = true;
+    }
+
+    for (int i = 0; i < width / 3; i++) {
+        scene[height / 3 * 2 + 1][width / 3 + i] = true;
+    }
+
+    for (int i = 0; i < width / 6; i++) {
+        scene[height / 3 * 2 + 1 - width / 12 + i / 2][width / 3 + width / 6 + i] = true;
+        scene[height / 3 * 2 + 1 - width / 12 + i / 2][width / 3 + width / 6 - i] = true;
+    }
+}
+
+void sceneWindBreakers() {
+}
+
+void sceneWindChaos() {
+}
 // testing stuff
 // lattice[50][25].wind[0] = true;
 // lattice[50][25].wind[1] = true;
